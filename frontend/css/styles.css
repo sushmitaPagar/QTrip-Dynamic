@@ -49,7 +49,6 @@ footer {
   /* width: calc(25% - 20px); */
   /* padding: 6px; */
   border-radius: 8px;
-  cursor: pointer;
   -webkit-transition: 0.2s all;
   overflow: hidden;
 
@@ -67,7 +66,8 @@ footer {
 }
 .tile img:hover {
   -webkit-filter: brightness(50%);
-  transform: scale(1.1);
+  cursor: pointer;
+  /* transform: scale(1.1); */
 }
 
 .tile-text {
@@ -75,6 +75,7 @@ footer {
   z-index: 1;
   text-transform: uppercase;
   letter-spacing: 2px;
+  text-align: center;
 }
 .hero-image {
   /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
