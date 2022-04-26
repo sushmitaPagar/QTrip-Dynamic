@@ -4,21 +4,70 @@ import config from "../conf/index.js";
 function getCityFromURL(search) {
   // TODO: MODULE_ADVENTURES
   // 1. Extract the city id from the URL's Query Param and return it
-
+  const params = new URLSearchParams(search);
+  let cityId = params.get('city');
+  
+  return cityId;
 }
 
 //Implementation of fetch call with a paramterized input based on city
 async function fetchAdventures(city) {
   // TODO: MODULE_ADVENTURES
   // 1. Fetch adventures using the Backend API and return the data
-
+  try{
+    let adventuresUrl = config.backendEndpoint + `/adventures?city=${city}`;
+    let response = await fetch(adventuresUrl);
+    let data = await response.json();
+    return data;
+  }catch(err){
+    return null;
+  }
+  
 }
 
 //Implementation of DOM manipulation to add adventures for the given city from list of adventures
 function addAdventureToDOM(adventures) {
   // TODO: MODULE_ADVENTURES
   // 1. Populate the Adventure Cards and insert those details into the DOM
+  let dataDiv = document.getElementById("data");
+  adventures.forEach((key) => {
+    addAdventure(key.id, key.category, key.image, key.name, key.costPerHead, key.duration);
+  });
 
+  function addAdventure(id, category, image, name, costPerHead, duration){
+    
+    let childDiv = document.createElement("div");
+    childDiv.setAttribute("class", "col-6 col-sm-6 col-lg-3 mb-3");
+    childDiv.style = "position: relative";
+    dataDiv.appendChild(childDiv);
+
+    let anchorElement = document.createElement("a");
+    anchorElement.setAttribute("href", `detail/?adventure=${id}`);
+    anchorElement.setAttribute("id", `${id}`);
+    anchorElement.innerHTML = `<div class="category-banner">${category}</div>    
+    <div class="card activity-card">
+          <img src="${image}" alt="${name}" />
+          <div class="card-body">
+            <div class="d-md-flex justify-content-between">
+              <p class="card-title">${name}</p>
+              <p class="card-text">₹${costPerHead}</p>
+            </div>
+            <div class="d-md-flex justify-content-between">
+              <p class="card-title">Duration</p>
+              <p class="card-text">${duration} Hours</p>
+            </div>
+          </div>
+        </div>`;
+        childDiv.appendChild(anchorElement);
+  }
+  
+  // let newAdventureBtn = document.createElement("button");
+  // newAdventureBtn.setAttribute("type", "button");
+  // newAdventureBtn.setAttribute("id", "addNewAdventure");
+  // newAdventureBtn.innerText = "Add New Adventure";
+
+  // let body = document.body;
+  // body.appendChild(newAdventureBtn);
 }
 
 //Implementation of filtering by duration which takes in a list of adventures, the lower bound and upper bound of duration and returns a filtered list of adventures.
