@@ -1,14 +1,11 @@
 import config from "../conf/index.js";
 
 async function init() {
-  //console.log("From init()");
-  console.log(config.backendEndpoint);
   //Fetches list of all cities along with their images and description
   let cities = await fetchCities();
-  
+
   //Updates the DOM with the cities
   cities.forEach((key) => {
-    //console.log(key.id);
     addCityToDOM(key.id, key.city, key.description, key.image);
   });
 }
