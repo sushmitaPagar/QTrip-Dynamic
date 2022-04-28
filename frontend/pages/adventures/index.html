@@ -140,11 +140,8 @@
             let filteredAdventures = filterFunction(adventures, filters);
 
             //Updates the filtered adventures list to the DOM
-            
             addAdventureToDOM(filteredAdventures);
-          
             
-
             // Updates the DOM with filter pills if any
             generateFilterPillsAndUpdateDOM(filters);
         })();
@@ -154,16 +151,35 @@
         function selectDuration(event) {
             // TODO: MODULE_FILTERS
             // 1. Change the DOM to show the selected duration filter. Use the provided input event
-            // 2. Invoke saveFiltersToLocalStorage here
+            document.getElementById("data").textContent = "";
 
+            //document.getElementById("category-list").textContent = event.target.value + " Hours";
+            // 2. Invoke saveFiltersToLocalStorage here
+            filters.duration = event.target.value;
+            //console.log("from selectDuration() :: ",filters);
+            let filteredAdventures = filterFunction(adventures, filters);
+            addAdventureToDOM(filteredAdventures);
+            
+            //console.log("from selectDuration() :: ", event.target);
+            saveFiltersToLocalStorage(filters);
         }
 
         //executed when clear button is clicked on duration filter dropdown
         function clearDuration(event) {
             // TODO: MODULE_FILTERS
             // 1. Change the DOM to clear the Duration filter. Refer clearCategory() below
-            // 2. Invoke saveFiltersToLocalStorage here
+        
+            document.getElementById("duration-select").selectedIndex = 0;
 
+            // 2. Invoke saveFiltersToLocalStorage here
+            document.getElementById("data").textContent = "";
+
+            filters.duration = '';
+            let filteredAdventures = filterFunction(adventures, filters);
+            addAdventureToDOM(filteredAdventures);
+
+            //console.log(event.target);
+            saveFiltersToLocalStorage(filters);
         }
 
 
@@ -173,19 +189,22 @@
             document.getElementById("data").textContent = "";
             document.getElementById("category-list").textContent = "";
 
+            //console.log(event.target.value);
             let category = event.target.value;
             document.getElementById("category-select").selectedIndex = 0;
 
             filters["category"].push(category);
             filters["category"] = filters["category"].filter(onlyUnique);
 
-
+            //console.log(filters);
             generateFilterPillsAndUpdateDOM(filters);
             let filteredAdventures = filterFunction(adventures, filters);
             addAdventureToDOM(filteredAdventures);
 
             // TODO: MODULE_FILTERS
             // 1. Invoke saveFiltersToLocalStorage here
+            //console.log("from selectCategory() :: ", event.target);
+            saveFiltersToLocalStorage(filters);
         }
 
         //executed when clear button is clicked on category filter dropdown
@@ -199,6 +218,7 @@
 
             // TODO: MODULE_FILTERS
             // 1. Invoke saveFiltersToLocalStorage here
+            saveFiltersToLocalStorage(filters);
         }
 
         //helper function

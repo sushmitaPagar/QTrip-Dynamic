@@ -4,9 +4,12 @@ import config from "../conf/index.js";
 function getCityFromURL(search) {
   // TODO: MODULE_ADVENTURES
   // 1. Extract the city id from the URL's Query Param and return it
+  //console.log("from getCityFromURL() :: ", search);
   const params = new URLSearchParams(search);
   let cityId = params.get('city');
-  
+
+  // let cityId = search.split("=")[1];
+  // console.log("cityId ::", cityId);
   return cityId;
 }
 
@@ -70,18 +73,45 @@ function addAdventureToDOM(adventures) {
   // body.appendChild(newAdventureBtn);
 }
 
+function isInRange(value) {
+  if (typeof value !== 'number') {
+      return false;
+  }
+  return value >= this.low && value <= this.high;
+}
+
 //Implementation of filtering by duration which takes in a list of adventures, the lower bound and upper bound of duration and returns a filtered list of adventures.
 function filterByDuration(list, low, high) {
   // TODO: MODULE_FILTERS
   // 1. Filter adventures based on Duration and return filtered list
+  let range = {low, high};
+  //console.log("range :: ", range);
+  let durationArr = [];
+  list.forEach(e => {
+    durationArr.push(e.duration);
+  });
+  //console.log(durationArr);
+  let filteredDurations = durationArr.filter(isInRange, range);
+  //console.log("filteredDurations :: ", filteredDurations);
 
+  let filteredList = list.filter((item) => {
+    return filteredDurations.includes(item.duration);
+  });
+  //console.log("filteredList :: ", filteredList);
+
+  return filteredList;
 }
 
 //Implementation of filtering by category which takes in a list of adventures, list of categories to be filtered upon and returns a filtered list of adventures.
 function filterByCategory(list, categoryList) {
   // TODO: MODULE_FILTERS
   // 1. Filter adventures based on their Category and return filtered list
-
+  //console.log("categoryList :: ", categoryList);
+  
+  let filteredList = list.filter((item) => {
+    return categoryList.includes(item.category)});
+  //console.log("filtered list :: ", filteredList);
+  return filteredList;
 }
 
 // filters object looks like this filters = { duration: "", category: [] };
@@ -95,7 +125,25 @@ function filterFunction(list, filters) {
   // TODO: MODULE_FILTERS
   // 1. Handle the 3 cases detailed in the comments above and return the filtered list of adventures
   // 2. Depending on which filters are needed, invoke the filterByDuration() and/or filterByCategory() methods
+  if(filters.duration === '' && filters.category.length !== 0){
+    list = filterByCategory(list, filters.category);
+    return list;
+  }else if(filters.duration !== '' && filters.category.length === 0){
+    let splitedDurationArr = filters.duration.split("-");
+    //console.log("splitedDurationArr :: ", splitedDurationArr);
+    let low = splitedDurationArr[0];
+    let high = splitedDurationArr[1];
+    list = filterByDuration(list, low, high);
+    return list;
+  }else if(filters.duration !== '' && filters.category.length !== 0){
+    list = filterByCategory(list, filters.category);
 
+    let splitedDurationArr = filters.duration.split("-");
+    let low = splitedDurationArr[0];
+    let high = splitedDurationArr[1];
+    list = filterByDuration(list, low, high);
+    return list;
+  }
 
   // Place holder for functionality to work in the Stubs
   return list;
@@ -106,17 +154,25 @@ function saveFiltersToLocalStorage(filters) {
   // TODO: MODULE_FILTERS
   // 1. Store the filters as a String to localStorage
 
+  if(filters.duration !== '' || filters.category.length !== 0){
+    window.localStorage.setItem('filters', JSON.stringify(filters));
+  }else
+  window.localStorage.removeItem('filters');
+
   return true;
-}
+  }
+  
 
 //Implementation of localStorage API to get filters from local storage. This should get called whenever the DOM is loaded.
 function getFiltersFromLocalStorage() {
   // TODO: MODULE_FILTERS
   // 1. Get the filters from localStorage and return String read as an object
-
-
-  // Place holder for functionality to work in the Stubs
-  return null;
+  //console.log("console from getFiltersFromLocalStorage() :: ", window.localStorage.getItem("filters"));
+  
+  return JSON.parse(window.localStorage.getItem("filters"));
+   
+   // Place holder for functionality to work in the Stubs
+  
 }
 
 //Implementation of DOM manipulation to add the following filters to DOM :
@@ -127,6 +183,17 @@ function generateFilterPillsAndUpdateDOM(filters) {
   // TODO: MODULE_FILTERS
   // 1. Use the filters given as input, update the Duration Filter value and Generate Category Pills
 
+  document.getElementById("duration-select").value = filters.duration;
+
+  let categoryListElement = document.getElementById("category-list");
+
+  filters.category.forEach((item) => {
+    let categoryPillDiv = document.createElement("div");
+    categoryPillDiv.setAttribute("class", "category-filter");
+    categoryPillDiv.innerText = item;
+    categoryListElement.appendChild(categoryPillDiv);
+  });
+  
 }
 export {
   getCityFromURL,
