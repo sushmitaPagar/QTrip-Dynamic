@@ -18,7 +18,7 @@ async function fetchCities() {
     let url = config.backendEndpoint + "/cities";
     let response = await fetch(url);
     let cities = await response.json();
-    console.log(cities);
+    //console.log(cities);
     return cities;
   }catch(err){
     alert(err);
