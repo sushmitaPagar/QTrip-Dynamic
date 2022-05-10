@@ -120,7 +120,7 @@
                 ? getFiltersFromLocalStorage()
                 : { duration: "", category: [] };
 
-        //console.log(filters);
+        console.log(filters);
         
         //entry point (executed when DOM is loaded)
         (async function () {
@@ -140,8 +140,8 @@
             let filteredAdventures = filterFunction(adventures, filters);
 
             //Updates the filtered adventures list to the DOM
-            addAdventureToDOM(filteredAdventures);
-            
+            addAdventureToDOM(filteredAdventures)
+
             // Updates the DOM with filter pills if any
             generateFilterPillsAndUpdateDOM(filters);
         })();
@@ -189,14 +189,12 @@
             document.getElementById("data").textContent = "";
             document.getElementById("category-list").textContent = "";
 
-            //console.log(event.target.value);
             let category = event.target.value;
             document.getElementById("category-select").selectedIndex = 0;
 
             filters["category"].push(category);
             filters["category"] = filters["category"].filter(onlyUnique);
 
-            //console.log(filters);
             generateFilterPillsAndUpdateDOM(filters);
             let filteredAdventures = filterFunction(adventures, filters);
             addAdventureToDOM(filteredAdventures);
